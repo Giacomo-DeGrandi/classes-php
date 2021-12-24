@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,200;0,300;0,900;1,100&display=swap');
+
+:root {
+	--fontgen: 'Overpass', sans-serif;
+}
+
+* {
+	font-family: var(--fontgen);
+}
