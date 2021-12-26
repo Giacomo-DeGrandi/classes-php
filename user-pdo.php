@@ -86,6 +86,11 @@ class user {
 			$conn=$this->conn;
 			$prepared= $conn->prepare("UPDATE utilisateurs SET login = :login ,password = :password, email = :email, firstname = :firstname, lastname = :lastname WHERE id = :id ");
 			$executed = $prepared->execute([':id'=> $id, ':login'=> $login ,':password'=> $password,':email'=> $email,':firstname'=> $firstname,':lastname'=> $lastname]);
+			$login=$this->login;
+			$password=$this->password;
+			$email=$this->email;
+			$firstname=$this->firstname;
+			$lastname=$this->lastname;
 	}
 //___________IS CONNECTED___________________________________________________________
 
@@ -155,7 +160,7 @@ class user {
 
 // INITIALISE NEW USER
 
-$billy=new User($conn);
+//$billy=new User($conn);
 
 ?>
 <!DOCTYPE html>
@@ -172,8 +177,8 @@ $billy=new User($conn);
 // TESTS
 
 //$billy->register('billy','1234', 'billy@billy.io','joe','billy');
-$billy->connect('billy','1234');
-echo $billy->getLastname();
+//$billy->connect('billy','1234');
+//echo $billy->isConnected();
 
 ?>
 </body>
