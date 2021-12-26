@@ -8,7 +8,10 @@
 	$password = "";
 	$database = "classes";
 
-$conn = new mysqli($server, $username, $password, $database);
+$dsn = "mysql:host=$server;dbname=$database;charset=UTF8";
+
+$conn = new PDO($dsn, $username, $password);
+
 
 
 class user {
@@ -28,7 +31,9 @@ class user {
 	function register($login,$password,$email,$firstname,$lastname){
 		
 		$conn=$this->conn;
-		$conn->query("INSERT INTO utilisateurs (login,password,email,firstname,lastname) VALUES ('$login','$password','$email','$firstname','$lastname') ");
+		$sql = " INSERT INTO utilisateurs(login,password,email,firstname,lastname) VALUES (:login,:password,:email,:firstname,:lastname) ";
+        $prepared = $conn->prepare($sql);
+        $executed = $prepared->execute([':login'=> $login ,':password'=> $password,':email'=> $email,':firstname'=> $firstname,':lastname'=> $lastname]);
 
 		echo '<table><tr>';
 		$arr=[$login,$password,$email,$firstname,$lastname];
@@ -46,10 +51,12 @@ class user {
 		$conn=$this->conn;
 		$login=$this->login;
 		setcookie('connected', $login, time() +3600);
-		$res=$conn->query("SELECT * FROM utilisateurs WHERE login ='$login'");
-		$row=$res->fetch_row();
+		$prepared = $conn->prepare("SELECT * FROM utilisateurs WHERE login = :login ");
+		$prepared->execute(['login' => $login]); 
+		$row = $prepared->fetch();
 		$id=$row[0];
 		$this->id=$id;
+		echo 'this user is connected. ';
 
 	}
 
@@ -67,7 +74,8 @@ class user {
 		$id=$this->id;
 		$conn=$this->conn;
 		$login=$this->login;
-		$conn->query("DELETE FROM utilisateurs WHERE login = '$id' ");
+		$prepared= $conn->prepare("DELETE FROM utilisateurs WHERE id = :id ");
+		$prepared->execute(['id' => $id]); 
 		setcookie('connected', $login, time() -3600);
 	}
 
@@ -75,9 +83,9 @@ class user {
 
 	function update($login,$password,$email,$firstname,$lastname){
 			$id=$this->id;
-			echo $id;
 			$conn=$this->conn;
-			$conn->query("UPDATE utilisateurs SET login = '$login',password = '$password', email = '$email', firstname = '$firstname', lastname = '$lastname' WHERE id = '$id' ");
+			$prepared= $conn->prepare("UPDATE utilisateurs SET login = :login ,password = :password, email = :email, firstname = :firstname, lastname = :lastname WHERE id = :id ");
+			$executed = $prepared->execute([':id'=> $id, ':login'=> $login ,':password'=> $password,':email'=> $email,':firstname'=> $firstname,':lastname'=> $lastname]);
 	}
 //___________IS CONNECTED___________________________________________________________
 
@@ -92,13 +100,15 @@ class user {
 	function getAllInfos(){
 			$login=$this->login;
 			$conn=$this->conn;
-			$result=$conn->query("SELECT * FROM utilisateurs WHERE login = '$login' ");
-			$row=$result->fetch_row();
-			echo '<table><tr>';
+			$prepared=$conn->prepare("SELECT * FROM utilisateurs WHERE login = :login ");
+			$prepared->execute(['login' => $login]); 
+			$row = $prepared->fetch(PDO::FETCH_ASSOC);
+			echo '<table>';
 			foreach($row as $k=> $v){
-				echo '<td>'.$v.'</td>';
+				echo '<tr><td><b>'.$k.'</b></td>';
+				echo '<td>'.$v.'</td></tr>';
 			}
-			echo '<table></tr>';
+			echo '</table>';
 	}
 
 //___________GET LOGIN_______________________________________________________________
@@ -113,9 +123,10 @@ class user {
 	function getEmail(){
 		$login=$this->login;
 		$conn=$this->conn;
-		$result=$conn->query("SELECT email FROM utilisateurs WHERE login = '$login' ");
-		$email=$result->fetch_assoc();
-		return $email['email'];
+		$prepared=$conn->prepare("SELECT email FROM utilisateurs WHERE login = :login ");
+		$executed=$prepared->execute(['login' => $login]);
+		$row = $prepared->fetch(PDO::FETCH_ASSOC);
+		return $row['email'];
 	}
 
 //___________GET FIRSTNAME___________________________________________________________
@@ -123,9 +134,10 @@ class user {
 	function getFirstname(){
 		$login=$this->login;
 		$conn=$this->conn;
-		$result=$conn->query("SELECT firstname FROM utilisateurs WHERE login = '$login' ");
-		$firstname=$result->fetch_assoc();
-		return $firstname['firstname'];
+		$prepared=$conn->prepare("SELECT firstname FROM utilisateurs WHERE login = :login ");
+		$executed=$prepared->execute(['login' => $login]);
+		$row = $prepared->fetch(PDO::FETCH_ASSOC);
+		return $row['firstname'];
 	}
 
 //___________GET LASTNAME____________________________________________________________
@@ -133,16 +145,17 @@ class user {
 	function getLastname(){
 		$login=$this->login;
 		$conn=$this->conn;
-		$result=$conn->query("SELECT lastname FROM utilisateurs WHERE login = '$login' ");
-		$lastname=$result->fetch_assoc();
-		return $lastname['lastname'];
+		$prepared=$conn->prepare("SELECT lastname FROM utilisateurs WHERE login = :login ");
+		$executed=$prepared->execute(['login' => $login]);
+		$row = $prepared->fetch(PDO::FETCH_ASSOC);
+		return $row['lastname'];
 	}
 
 }
 
 // INITIALISE NEW USER
 
-$mina=new User($conn);
+$billy=new User($conn);
 
 ?>
 <!DOCTYPE html>
@@ -158,9 +171,9 @@ $mina=new User($conn);
 
 // TESTS
 
-//$mina->register('mina','1234', 'mina@mina.io','etta','mina');
-$mina->connect('mina','1234');
-echo $mina->getEmail();
+//$billy->register('billy','1234', 'billy@billy.io','joe','billy');
+$billy->connect('billy','1234');
+echo $billy->getLastname();
 
 ?>
 </body>

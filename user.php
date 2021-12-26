@@ -58,6 +58,8 @@ class user {
 	function disconnect(){
 		$login=$this->login;
 		setcookie('connected', $login, time() -3600);
+		$conn=$this->conn;
+		$conn->close();
 		return false;
 	}
 
@@ -69,6 +71,7 @@ class user {
 		$login=$this->login;
 		$conn->query("DELETE FROM utilisateurs WHERE login = '$id' ");
 		setcookie('connected', $login, time() -3600);
+		$conn->close();
 	}
 
 //___________UPDATE_________________________________________________________________
@@ -159,8 +162,9 @@ $mina=new User($conn);
 // TESTS
 
 //$mina->register('mina','1234', 'mina@mina.io','etta','mina');
-$mina->connect('mina','1234');
-echo $mina->getEmail();
+//$mina->connect('mina','1234');
+//$mina->disconnect();
+//echo $mina->getEmail();
 
 ?>
 </body>
