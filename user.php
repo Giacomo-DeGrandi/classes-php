@@ -69,7 +69,7 @@ class user {
 		$id=$this->id;
 		$conn=$this->conn;
 		$login=$this->login;
-		$conn->query("DELETE FROM utilisateurs WHERE login = '$id' ");
+		$conn->query("DELETE FROM utilisateurs WHERE id = '$id' ");
 		setcookie('connected', $login, time() -3600);
 		$conn->close();
 	}
