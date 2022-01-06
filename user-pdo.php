@@ -159,7 +159,7 @@ class userPdo {
 
 // INITIALISE NEW USER
 
-$billy=new User();
+$billy=new userPdo();
 
 ?>
 <!DOCTYPE html>
@@ -177,6 +177,7 @@ $billy=new User();
 
 //$billy->register('billy','1234', 'billy@billy.io','joe','billy');
 $billy->connect('billy','1234');
+echo ' ';
 echo $billy->getEmail();
 
 ?>
