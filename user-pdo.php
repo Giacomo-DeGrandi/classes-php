@@ -1,29 +1,28 @@
 <?php
 
 
-//my connection for DB
 
-	$server = "localhost";
-	$username = "root";
-	$password = "";
-	$database = "classes";
-
-$dsn = "mysql:host=$server;dbname=$database;charset=UTF8";
-
-$conn = new PDO($dsn, $username, $password);
-
-
-
-class user {
+class userPdo {
 
 	// toutes des VARCHAR en DB max 50
 
-	private $id,$password,$conn;
+	private $id,$password;
 	public $login,$email,$firstname,$lastname; 
 
-	function __construct($conn){
-		$this->conn=$conn;
-			return $conn;
+	function __construct(){
+
+		//my connection for DB
+
+			$server = "localhost";
+			$username = "root";
+			$password = "";
+			$database = "classes";
+
+			$dsn = "mysql:host=$server;dbname=$database;charset=UTF8";
+
+			$conn = new PDO($dsn, $username, $password);
+			$this->conn=$conn;
+				return $conn;
 	}
 
 //___________REGISTER____________________________________________________________
@@ -56,7 +55,7 @@ class user {
 		$row = $prepared->fetch();
 		$id=$row[0];
 		$this->id=$id;
-		echo 'this user is connected. ';
+		echo 'Hi &#160;'.'<b>'.$login.'</b>'.'&#160; you\'re now connected. ';
 
 	}
 
@@ -160,7 +159,7 @@ class user {
 
 // INITIALISE NEW USER
 
-//$billy=new User($conn);
+$billy=new User();
 
 ?>
 <!DOCTYPE html>
@@ -177,8 +176,8 @@ class user {
 // TESTS
 
 //$billy->register('billy','1234', 'billy@billy.io','joe','billy');
-//$billy->connect('billy','1234');
-//echo $billy->isConnected();
+$billy->connect('billy','1234');
+echo $billy->getEmail();
 
 ?>
 </body>

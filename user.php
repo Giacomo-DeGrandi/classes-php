@@ -3,22 +3,24 @@
 
 //my connection for DB
 
-	$server = "localhost";
-	$username = "root";
-	$password = "";
-	$database = "classes";
-
-$conn = new mysqli($server, $username, $password, $database);
 
 
-class user {
+
+class User {
 
 	// toutes des VARCHAR en DB max 50
 
-	private $id,$password,$conn;
+	private $id,$password;
 	public $login,$email,$firstname,$lastname; 
 
-	function __construct($conn){
+	function __construct(){
+
+		$server = "localhost";
+		$username = "root";
+		$password = "";
+		$database = "classes";
+
+		$conn = new mysqli($server, $username, $password, $database);
 		$this->conn=$conn;
 			return $conn;
 	}
